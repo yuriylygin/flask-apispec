@@ -96,7 +96,7 @@ class FlaskApiSpec:
         return flask.jsonify(self.spec.to_dict())
 
     def swagger_ui(self):
-        return flask.render_template('swagger-ui.html')
+        return flask.render_template('swagger-ui.html', bp=self)
 
     def register_existing_resources(self):
         for name, rule in self.app.view_functions.items():
