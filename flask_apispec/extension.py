@@ -78,8 +78,9 @@ class FlaskApiSpec:
             __name__,
             static_folder='./static',
             template_folder='./templates',
-            static_url_path=f'{self.base_url_prefix}/flask-apispec/static',
+            static_url_path='/flask-apispec/static',
         )
+        setattr(blueprint, 'base_url_prefix', self.base_url_prefix)
 
         json_url = self.app.config.get('APISPEC_SWAGGER_URL', '/swagger/')
         if json_url:
