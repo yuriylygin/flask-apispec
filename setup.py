@@ -54,5 +54,4 @@ setup(
         'Bug Reports': 'https://github.com/jmcarp/flask-apispec/issues',
         'Changelog': 'https://flask-apispec.readthedocs.io/en/latest/changelog.html',
     },
-    scripts=['scripts/install.sh']
 )

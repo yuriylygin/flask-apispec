@@ -39,10 +39,9 @@ class FlaskApiSpec:
         OPTIONS requests in the specification
     """
 
-    def __init__(self, app=None, document_options=True, base_url_prefix=''):
+    def __init__(self, app=None, document_options=True):
         self._deferred = []
         self.app = app
-        self.base_url_prefix = base_url_prefix
         self.view_converter = None
         self.resource_converter = None
         self.spec = None
@@ -73,14 +72,14 @@ class FlaskApiSpec:
             bound()
 
     def add_swagger_routes(self):
+        static_url_path = self.app.config.get('APISPEC_STATIC_URL_PATH', '/flask-apispec/static/')
         blueprint = flask.Blueprint(
             'flask-apispec',
             __name__,
             static_folder='./static',
             template_folder='./templates',
-            static_url_path='/flask-apispec/static',
+            static_url_path=static_url_path,
         )
-        setattr(blueprint, 'base_url_prefix', self.base_url_prefix)
 
         json_url = self.app.config.get('APISPEC_SWAGGER_URL', '/swagger/')
         if json_url:
