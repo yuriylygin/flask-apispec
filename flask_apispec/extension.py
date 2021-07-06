@@ -39,13 +39,14 @@ class FlaskApiSpec:
         OPTIONS requests in the specification
     """
 
-    def __init__(self, app=None, document_options=True):
+    def __init__(self, app=None, document_options=True, base_url=''):
         self._deferred = []
         self.app = app
         self.view_converter = None
         self.resource_converter = None
         self.spec = None
         self.document_options = document_options
+        self.base_url = base_url
 
         if app:
             self.init_app(app)
@@ -89,7 +90,7 @@ class FlaskApiSpec:
         if ui_url:
             blueprint.add_url_rule(ui_url, 'swagger-ui', self.swagger_ui)
 
-        self.app.register_blueprint(blueprint)
+        self.app.register_blueprint(blueprint, bp=self)
 
     def swagger_json(self):
         return flask.jsonify(self.spec.to_dict())
