@@ -39,13 +39,14 @@ class FlaskApiSpec:
         OPTIONS requests in the specification
     """
 
-    def __init__(self, app=None, document_options=True):
+    def __init__(self, app=None, document_options=True, base_url=''):
         self._deferred = []
         self.app = app
         self.view_converter = None
         self.resource_converter = None
         self.spec = None
         self.document_options = document_options
+        self.base_url = base_url
 
         if app:
             self.init_app(app)
@@ -72,12 +73,13 @@ class FlaskApiSpec:
             bound()
 
     def add_swagger_routes(self):
+        static_url_path = self.app.config.get('APISPEC_STATIC_URL_PATH', '/flask-apispec/static/')
         blueprint = flask.Blueprint(
             'flask-apispec',
             __name__,
             static_folder='./static',
             template_folder='./templates',
-            static_url_path='/flask-apispec/static',
+            static_url_path=static_url_path,
         )
 
         json_url = self.app.config.get('APISPEC_SWAGGER_URL', '/swagger/')
@@ -88,13 +90,13 @@ class FlaskApiSpec:
         if ui_url:
             blueprint.add_url_rule(ui_url, 'swagger-ui', self.swagger_ui)
 
-        self.app.register_blueprint(blueprint)
+        self.app.register_blueprint(blueprint, bp=self)
 
     def swagger_json(self):
         return flask.jsonify(self.spec.to_dict())
 
     def swagger_ui(self):
-        return flask.render_template('swagger-ui.html')
+        return flask.render_template('swagger-ui.html', bp=self)
 
     def register_existing_resources(self):
         for name, rule in self.app.view_functions.items():
